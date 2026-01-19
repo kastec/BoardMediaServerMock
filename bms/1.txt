@@ -12,3 +12,12 @@ npm run dev
 
 
 
+Режим server (MasterTabletController)
+   npm run dev -- server
+   npm run dev -- server 8080
+   npm run dev -- 8080 server
+   
+Обычный режим (SlaveController):
+   npm run dev
+   npm run dev -- 3000
+   
