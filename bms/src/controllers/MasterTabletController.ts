@@ -16,10 +16,11 @@ export class MasterTabletController {
 			const ip = payload.ip
 			
 			// Валидация IP адреса с опциональным портом (базовая проверка)
-			// Формат: IP или IP:PORT (например: 192.168.1.1 или 192.168.1.1:8080)
-			const ipRegex = /^(\d{1,3}\.){3}\d{1,3}(:\d+)?$/
+			// Формат: IP или IP:PORT или localhost или localhost:PORT
+			// Например: 192.168.1.1, 192.168.1.1:8080, localhost, localhost:8080
+			const ipRegex = /^((\d{1,3}\.){3}\d{1,3}|localhost)(:\d+)?$/
 			if (!ipRegex.test(ip)) {
-				response.status(400).json({ error: 'Invalid IP address format. Expected format: IP or IP:PORT (e.g., 192.168.1.1 or 192.168.1.1:8080)' })
+				response.status(400).json({ error: 'Invalid IP address format. Expected format: IP or IP:PORT or localhost or localhost:PORT (e.g., 192.168.1.1, 192.168.1.1:8080, localhost, localhost:8080)' })
 				return
 			}
 
