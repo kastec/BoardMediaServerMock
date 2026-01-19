@@ -22,7 +22,7 @@ if (isNaN(PORT) || PORT < 1 || PORT > 65535) {
   process.exit(1);
 }
 
-const mode = isServerMode ? 'Server' : 'Client';
+const mode = isServerMode ? 'Board Media Server - PROXY' : 'CrewTablet Client';
 console.log(`Mode: ${mode}`);
 console.log(`Port: ${PORT}`);
 
