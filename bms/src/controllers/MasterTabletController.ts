@@ -38,7 +38,10 @@ export class MasterTabletController {
 	proxy = async (request: Request, response: Response) => {
 		try {
 			// Проверяем заголовок SEND-TO для определения целевого IP
-			const sendTo = request.headers['send-to'] || request.headers['SEND-TO']
+			const sendToHeader = request.headers['send-to'] || request.headers['SEND-TO']
+			// Преобразуем заголовок в строку (если массив, берем первый элемент)
+			const sendTo = Array.isArray(sendToHeader) ? sendToHeader[0] : sendToHeader
+			
 			let targetIp: string | null = null
 
 			if (sendTo === 'master') {
@@ -55,7 +58,7 @@ export class MasterTabletController {
 					response.status(404).json({ error: 'Master tablet IP not registered' })
 					return
 				}
-				targetIp = this.masterTabletIp
+				targetIp = sendTo ?? null
 			}
 
 			// Получаем путь из оригинального запроса

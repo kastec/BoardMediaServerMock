@@ -21,3 +21,18 @@ npm run dev
    npm run dev
    npm run dev -- 3000
    
+   
+   
+Запуск BMS Proxy   
+npm run dev -- server 6010    
+
+запуск CT-master
+npm run dev -- 5000
+
+регистрация CT-мастера  
+curl --location "http://localhost:6010/api/master-tablet/register" --header "Content-Type: application/json" --data "{\"payload\": {\"ip\": \"localhost:5000\"}}"
+
+послать на CT через мастер   
+curl --location --request GET "http://localhost:6010/api/proxy/api/slave/hello" --header "SEND-TO: localhost:5001" --header "Content-Type: application/json" --data "{\"key\": \"value\"}" 
+
+
