@@ -1,0 +1,14 @@
+1. Нужно создать простой сервер на NODE и typescript.    
+Для сервера используем axios.  
+2. Нудно добавить файл контроллера HelloController , в котором есть метоl register, который вернет сроку "HEllo".
+3. Реристрация контролеров должна быть в файле routes.ts .
+Этот файл додлжен собержать строку регистрации HelloController в виде
+app.post('/api/register', HelloController.register) 
+4. Приложение должно работать на порту 6010
+
+
+npm install
+npm run dev
+
+
+
