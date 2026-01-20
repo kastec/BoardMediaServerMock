@@ -35,34 +35,36 @@ export class MasterTabletController {
 		}
 	}
 
+	getHeader = (request: Request, prop: string): string | undefined =>
+	{
+		const senders = request.headers[prop]
+		const from = Array.isArray(senders) ? senders[0] : senders
+		return from 
+	}
+
 	proxy = async (request: Request, response: Response) => {
 		try {
-			// Проверяем заголовок SEND-TO для определения целевого IP
-			const sendToHeader = request.headers['send-to'] || request.headers['SEND-TO']
-			// Преобразуем заголовок в строку (если массив, берем первый элемент)
-			const sendTo = Array.isArray(sendToHeader) ? sendToHeader[0] : sendToHeader
-			
-			let targetIp: string | null = null
+			const frm = this.getHeader(request, 'sender')
+			const sendTo = this.getHeader(request, 'send-to')
 
-			if (sendTo === 'master') {
-				// Если запрос для master планшета
+			if(!sendTo){
+				response.status(404).json({ error: 'Empty target IP (send-to)' })
+				return
+			}
+		
+			let targetIp = sendTo 
+
+			// Если запрос для master планшета
+			if (targetIp === 'master') {				
 				if (!this.masterTabletIp) {
 					response.status(404).json({ error: 'Master tablet IP not registered' })
 					return
 				}
 				targetIp = this.masterTabletIp
-			} else {
-				// Если SEND-TO не указан или указан другой адрес, используем master по умолчанию
-				// (для обратной совместимости)
-				if (!this.masterTabletIp) {
-					response.status(404).json({ error: 'Master tablet IP not registered' })
-					return
-				}
-				targetIp = sendTo ?? null
-			}
+			} 
 
 			// Получаем путь из оригинального запроса
-			// Убираем префикс /api/proxy из пути
+			// Убираем префикс /api/proxy из пути			
 			let originalPath = request.path.replace(/^\/api\/proxy/, '')
 			// Если путь пустой, используем /
 			if (!originalPath || originalPath === '') {
@@ -111,9 +113,9 @@ export class MasterTabletController {
 					// request.body уже является Buffer благодаря bodyParser.raw()
 					axiosConfig.data = request.body
 				}
-			}
-
-			console.log(`Proxying ${method.toUpperCase()} request to ${targetIp} (SEND-TO: ${sendTo || 'default'}): ${url}`)
+			} 
+			
+			console.log(`Proxying from '${frm}' to ${method.toUpperCase()} ${url}`)
 
 			const axiosResponse = await axios(axiosConfig)
 
