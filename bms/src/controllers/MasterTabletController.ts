@@ -4,6 +4,19 @@ import axios from 'axios'
 export class MasterTabletController {
 	private masterTabletIp: string | null = null
 
+	isRegistered = async (request: Request, response: Response) => {
+		response.json({ isRegistered: !!this.masterTabletIp })
+	}
+
+	private isCorrectAddress = (ip:string) : boolean=>
+	{
+			// Валидация IP адреса с опциональным портом (базовая проверка)
+			// Формат: IP или IP:PORT или localhost или localhost:PORT
+			// Например: 192.168.1.1, 192.168.1.1:8080, localhost, localhost:8080
+			const ipRegex = /^((\d{1,3}\.){3}\d{1,3}|localhost)(:\d+)?$/
+			return ipRegex.test(ip);
+	}
+
 	register = async (request: Request, response: Response) => {
 		try {
 			const { payload } = request.body
@@ -14,12 +27,8 @@ export class MasterTabletController {
 			}
 
 			const ip = payload.ip
-			
-			// Валидация IP адреса с опциональным портом (базовая проверка)
-			// Формат: IP или IP:PORT или localhost или localhost:PORT
-			// Например: 192.168.1.1, 192.168.1.1:8080, localhost, localhost:8080
-			const ipRegex = /^((\d{1,3}\.){3}\d{1,3}|localhost)(:\d+)?$/
-			if (!ipRegex.test(ip)) {
+
+			if (!this.isCorrectAddress(ip)) {
 				response.status(400).json({ error: 'Invalid IP address format. Expected format: IP or IP:PORT or localhost or localhost:PORT (e.g., 192.168.1.1, 192.168.1.1:8080, localhost, localhost:8080)' })
 				return
 			}
@@ -35,7 +44,7 @@ export class MasterTabletController {
 		}
 	}
 
-	getHeader = (request: Request, prop: string): string | undefined =>
+	private getHeader = (request: Request, prop: string): string | undefined =>
 	{
 		const senders = request.headers[prop]
 		const from = Array.isArray(senders) ? senders[0] : senders
