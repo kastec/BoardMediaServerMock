@@ -55,6 +55,8 @@ export class MasterTabletController {
 		try {
 			const frm = this.getHeader(request, 'sender')
 			const sendTo = this.getHeader(request, 'send-to')
+			
+			console.log(`Get request from '${frm}' to ${sendTo}`)
 
 			if(!sendTo){
 				response.status(404).json({ error: 'Empty target IP (send-to)' })

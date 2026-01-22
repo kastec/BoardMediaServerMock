@@ -7,10 +7,7 @@ import { SlaveController } from './controllers/SlaveController';
 // Создаем экземпляр контроллера
 const masterTabletController = new MasterTabletController();
 
-
 export default function routes(app: Express, isServerMode: boolean = false): void {
-	app.post('/api/register', HelloController.register);
-	
 	if (isServerMode) {
 	  registerMasterTabletRoutes(app);
 	} else {
@@ -20,7 +17,8 @@ export default function routes(app: Express, isServerMode: boolean = false): voi
 
 function registerMasterTabletRoutes(app: Express): void {
   // Master tablet registration and proxy
-  app.post('/api/master-tablet/register', masterTabletController.register);
+  app.post('/api/register', masterTabletController.register);
+  app.get('/api/master-tablet/register', masterTabletController.isRegistered);
   // Используем raw body parser для proxy, чтобы поддерживать бинарные данные
   // app.all обрабатывает все HTTP методы (GET, POST, PUT, DELETE, PATCH и т.д.)
   app.all('/api/proxy/*', bodyParser.raw({ type: '*/*', limit: '100mb' }), masterTabletController.proxy);
